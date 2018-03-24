@@ -2,20 +2,4 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/<language>:<version TAG>
-    steps:
-      - checkout
-      - run: <command>
-  test:
-    docker:
-      - image: circleci/<language>:<version TAG>
-    steps:
-      - checkout
-      - run: <command>
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test
-      
+      - image: $AWS_ECR_URL/test:0.1
