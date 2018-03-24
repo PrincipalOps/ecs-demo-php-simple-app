@@ -20,10 +20,10 @@ jobs:
           name: Push application Docker image
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              CLUSTER='test-app'
-              FAMILY='test-app'
-              DOCKER_IMAGE='test-app'
-              TASK='test-app'
+              CLUSTER='test'
+              FAMILY='test'
+              DOCKER_IMAGE='test'
+              TASK='test'
               SERVICE='app-service'
               # Login to AWS
               aws configure set region $AWS_REGION
