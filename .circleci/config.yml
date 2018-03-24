@@ -4,27 +4,20 @@ jobs:
     docker:
       - image: python:3.6.0
 
-    working_directory: /tmp
     steps:
+      - checkout
+      - setup_remote_docker
       - run:
-          name: Creating Dummy Artifacts
+          name: install aws
           command: |
-            echo "my artifact file" > /tmp/artifact-1;
-            mkdir /tmp/artifacts;
-            echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
-
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
       - run:
-          name: AWS Push Commands
+          name: "Log in to AWS ECR"
+          command: eval $(aws ecr get-login)
+      - run:
+          name: "Build & Push Docker Image"
           command: |
-            $(aws ecr get-login --region=eu-west-1 --no-include-email);
-            docker build -t test .;
-            docker tag test:latest $AWS_ECR_URL/test:latest;
-            docker push $AWS_ECR_URL/test:latest;
-
-      - store_artifacts:
-          path: /tmp/artifact-1
-          destination: artifact-file
-
-      - store_artifacts:
-          path: /tmp/artifacts
-    
+            docker build -t $AWS_ECR_URL/test:latest -t $AWS_ECR_URL/test:$CIRCLE_SHA1 .
+            docker push $AWS_ECR_URL/test:$CIRCLE_SHA1
