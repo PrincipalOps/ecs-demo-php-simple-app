@@ -13,6 +13,14 @@ jobs:
             mkdir /tmp/artifacts;
             echo "my artifact files in a dir" > /tmp/artifacts/artifact-2;
 
+      - run:
+          name: AWS Push Commands
+          command: |
+            aws ecr get-login --no-include-email --region eu-west-1;
+            docker build -t test .;
+            docker tag test:latest $AWS_ECR_URL/test:latest;
+            docker push $AWS_ECR_URL/test:latest;
+
       - store_artifacts:
           path: /tmp/artifact-1
           destination: artifact-file
