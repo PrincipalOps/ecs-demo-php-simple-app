@@ -3,6 +3,5 @@ jobs:
   build:
     docker:
       - image: $AWS_ECR_URL/test:0.1
-
     steps:
       - checkout
